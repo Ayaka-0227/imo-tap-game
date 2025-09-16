@@ -1,15 +1,23 @@
 require 'sinatra'
+require 'json'
 
-set :public_folder, File.dirname(__FILE__) + '/public'
+# Render対応の基本設定
+configure do
+  set :port, ENV['PORT'] || 4567
+  set :bind, '0.0.0.0'
+  set :environment, :production
+  set :public_folder, 'public'
+  set :views, 'views'
+end
 
+# ルート設定
 get '/' do
   erb :index
 end
 
-get '/game' do
-  erb :game
-end
-
-get '/success' do
-  erb :success
+# ゲームのAPI
+post '/tap' do
+  content_type :json
+  # ゲームロジック
+  { score: params[:score] }.to_json
 end
