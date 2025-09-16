@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>成功！</title>
+  <style>
+    body { 
+      font-family: sans-serif; 
+      text-align: center; 
+      margin: 0; 
+      padding: 20px; 
+      height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center; 
+    }
+    h1 { 
+      margin-bottom: 20px; 
+    }
+    img { 
+      max-width: 200px; 
+      width: 100%; /* スマホで縮小可能 */
+      height: auto; /* アスペクト比を維持 */
+      display: block; /* 余分なマージンを削除 */
+      margin: 0 auto; /* 中央揃え */
+    }
+    @media (max-width: 480px) { /* スマホ向け調整 */
+      img { max-width: 150px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>焼き芋完成！</h1>
+  <img src="/images/yakimo_char.png" alt="焼き芋キャラクター">
+</body>
+</html>

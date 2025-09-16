@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ゲーム画面</title>
+  <style>
+    body { 
+      font-family: sans-serif; 
+      text-align: center; 
+      margin: 0; 
+      height: 100vh; 
+      background-color: #E6E6FA; /* 薄紫色 */
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center; 
+    }
+    h2 { margin-bottom: 20px; font-size: 20px; } /* 元のサイズ */
+    #boxes { 
+      display: grid; 
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 10px; 
+      max-width: 152px; /* 2cm x 2 = 76px x 2 + gap */
+    }
+    .box { 
+      width: 76px; /* 約2cm */
+      height: 76px; /* 約2cm */
+      background: white; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-size: 28px; /* ボタンギリギリの大きさ */
+      color: #8B4513; /* 茶色 */
+      border: 1px solid #ccc; 
+      box-sizing: border-box; 
+      cursor: pointer; /* クリック可能を示す */
+    }
+    #message { 
+      font-size: 40px; /* 「You lose」を2倍の大きさ */
+      color: red; /* 赤文字 */
+      margin-top: 20px; 
+    }
+  </style>
+</head>
+<body>
+  <h2>「や・き・い・も」を順番にタップ！（3秒以内）</h2>
+  <div id="boxes"></div>
+  <p id="message"></p>
+
+  <script>
+    const chars = ['や', 'き', 'い', 'も'];
+    const correctOrder = ['や', 'き', 'い', 'も'];
+    let shuffled = [];
+    let currentIndex = 0;
+    let cycleCount = 0;
+    let timer;
+    let gameActive = true; // ゲームの状態を管理
+
+    // ピコーン音を再生
+    function playSuccessSound() {
+      const audio = new Audio('/audio/pico.mp3');
+      console.log('Attempting to load success sound from:', audio.src);
+      audio.play().catch(error => console.error('Success sound play failed:', error));
+    }
+
+    // ブッブー音を再生
+    function playFailSound() {
+      const audio = new Audio('https://www.soundjay.com/buttons/beep-05.mp3'); // 仮のブッブー音
+      console.log('Attempting to load fail sound from:', audio.src);
+      audio.play().catch(error => console.error('Fail sound play failed:', error));
+    }
+
+    function shuffleArray(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function initBoxes() {
+      if (!gameActive) return; // ゲームが終了していれば処理をスキップ
+      shuffled = shuffleArray([...chars]);
+      const boxes = document.getElementById('boxes');
+      boxes.innerHTML = '';
+      currentIndex = 0; // インデックスをリセット
+      shuffled.forEach(char => {
+        const box = document.createElement('div');
+        box.className = 'box';
+        box.textContent = char;
+        box.addEventListener('click', () => handleTap(char));
+        boxes.appendChild(box);
+      });
+      startTimer();
+      console.log(`Set ${cycleCount + 1} started`);
+    }
+
+    function startTimer() {
+      if (!gameActive) return; // ゲーム終了時はタイマーを開始しない
+      clearTimeout(timer);
+      timer = setTimeout(() => showLose(), 3000); // 3秒タイマー
+    }
+
+    function handleTap(tappedChar) {
+      if (!gameActive) return; // ゲーム終了時はタップを無効
+      if (tappedChar === correctOrder[currentIndex]) {
+        currentIndex++;
+        console.log(`Tapped: ${tappedChar}, Index: ${currentIndex}`);
+        if (currentIndex === 4) { // 1セット完成
+          clearTimeout(timer);
+          playSuccessSound();
+          currentIndex = 0;
+          cycleCount++;
+          console.log(`Cycle completed: ${cycleCount}/5`);
+          if (cycleCount === 5) { // 5回に変更
+            setTimeout(() => location.href = '/success', 1000);
+          } else {
+            initBoxes();
+          }
+        }
+      } else {
+        showLose(); // 順番ミスで即失敗
+      }
+    }
+
+    function showLose() {
+      if (!gameActive) return; // 既に終了済みならスキップ
+      clearTimeout(timer);
+      gameActive = false; // ゲームを終了
+      playFailSound();
+      setTimeout(() => {
+        document.getElementById('message').textContent = 'You lose（失敗）';
+        console.log('Game over: You lose');
+      }, 1000);
+    }
+
+    initBoxes();
+  </script>
+</body>
+</html>
