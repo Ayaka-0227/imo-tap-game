@@ -21,6 +21,17 @@ end
 get '/success' do
   erb :success
 end
+
+get '/debug' do
+  content_type :json
+  {
+    public_folder: settings.public_folder,
+    views: settings.views,
+    environment: settings.environment,
+    files_in_views: Dir.glob("#{settings.views}/*"),
+    files_in_public: Dir.glob("#{settings.public_folder}/**/*")
+  }.to_json
+end
 # ゲームのAPI
 post '/tap' do
   content_type :json
