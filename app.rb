@@ -22,7 +22,6 @@ get '/success' do
   erb :success
 end
 
-end
 # ゲームのAPI
 post '/tap' do
   content_type :json
