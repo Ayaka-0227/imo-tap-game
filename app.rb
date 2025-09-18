@@ -16,8 +16,9 @@ get '/' do
 end
 
 get '/game' do
-  erb :game
+  erb :game, locals: { osano_client_id: ENV['OSANO_CLIENT_ID'] || '' }
 end
+
 get '/success' do
   erb :success
 end
@@ -25,6 +26,10 @@ end
 # ゲームのAPI
 post '/tap' do
   content_type :json
-  # ゲームロジック
   { score: params[:score] }.to_json
+end
+
+# SPAフォールバック（ルート外のリロード対策）
+get '/*' do
+  erb :game
 end
