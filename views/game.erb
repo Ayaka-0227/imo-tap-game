@@ -60,7 +60,6 @@
   <h2>「や・き・い・も」を順番にタップ！（3秒以内）</h2>
   <div id="boxes"></div>
   <p id="message"></p>
-  <button id="retry-button" style="display: none;">やり直し</button>
 
   <script>
     const chars = ['や', 'き', 'い', 'も'];
@@ -141,15 +140,9 @@
       playFailSound();
       setTimeout(() => {
         document.getElementById('message').textContent = 'You lose（失敗）';
-        document.getElementById('retry-button').style.display = 'block'; // やり直しボタンを表示
         console.log('Game over: You lose');
       }, 1000);
     }
-
-    // やり直しボタンのイベントリスナー
-    document.getElementById('retry-button').addEventListener('click', () => {
-      location.href = '/'; // トップ画面にリダイレクト
-    });
 
     initBoxes();
   </script>
