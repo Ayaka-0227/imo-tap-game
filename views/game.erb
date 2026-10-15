@@ -74,6 +74,7 @@
     let cycleCount = 0;
     let timer;
     let gameActive = true;
+    let locked = false;
 
     // ピコーン音を再生
     function playSuccessSound() {
@@ -84,7 +85,7 @@
 
     // ブッブー音を再生
     function playFailSound() {
-      const audio = new Audio('https://www.soundjay.com/buttons/beep-05.mp3');
+      const audio = new Audio('/audio/beep-05.mp3');
       console.log('Attempting to load fail sound from:', audio.src);
       audio.play().catch(error => console.error('Fail sound play failed:', error));
     }
@@ -103,7 +104,7 @@
         const box = document.createElement('div');
         box.className = 'box';
         box.textContent = char;
-        box.addEventListener('click', () => handleTap(char));
+        box.addEventListener('click', () => handleTap(char, box));
         boxes.appendChild(box);
       });
       startTimer();
@@ -116,9 +117,10 @@
       timer = setTimeout(() => showLose(), 3000);
     }
 
-    function handleTap(tappedChar) {
-      if (!gameActive) return;
+    function handleTap(tappedChar, box) {
+      if (!gameActive || locked) return;
       if (tappedChar === correctOrder[currentIndex]) {
+        box.style.backgroundColor = '#fff176';
         currentIndex++;
         console.log(`Tapped: ${tappedChar}, Index: ${currentIndex}`);
         if (currentIndex === 4) {
@@ -130,7 +132,8 @@
           if (cycleCount === 5) {
             setTimeout(() => location.href = '/success', 1000);
           } else {
-            initBoxes();
+            locked = true;
+            setTimeout(() => { locked = false; initBoxes(); }, 300);
           }
         }
       } else {
