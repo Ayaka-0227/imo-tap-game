@@ -31,5 +31,5 @@ end
 
 # SPAフォールバック（ルート外のリロード対策）
 get '/*' do
-  erb :game
+  erb :game, locals: { osano_client_id: ENV['OSANO_CLIENT_ID'] || '' }
 end
